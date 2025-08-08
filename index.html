@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>加入我们 | 上海瑞吉机械传动技术有限公司</title>
+  <style>
+    body {
+      font-family: "Helvetica", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #f0f4f8, #ffffff);
+      color: #333;
+    }
+    header {
+      background: linear-gradient(to right, #003366, #004080);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      position: relative;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 10px 0;
+      z-index: 1000;
+      text-align: center;
+    }
+    nav a {
+      margin: 0 20px;
+      color: #004080;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .typewriter {
+      font-size: 20px;
+      height: 30px;
+      margin-top: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid white;
+      animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: white }
+    }
+    .container {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h2 {
+      color: #002244;
+      margin-top: 40px;
+      border-left: 5px solid #004080;
+      padding-left: 10px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .job-carousel {
+      overflow-x: auto;
+      display: flex;
+      gap: 20px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 10px;
+    }
+    .job-block {
+      flex: 0 0 90%;
+      scroll-snap-align: start;
+      min-width: 280px;
+      padding: 20px;
+      background-color: white;
+      border-left: 5px solid #007BFF;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, opacity 1s ease;
+      opacity: 0;
+    }
+    .job-block.visible {
+      opacity: 1;
+    }
+    .job-block:hover {
+      transform: translateY(-4px);
+    }
+    footer {
+      background-color: #002244;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 60px;
+      font-size: 14px;
+    }
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <script>
+    let scrollInterval;
+    window.addEventListener('DOMContentLoaded', () => {
+      const carousel = document.querySelector('.job-carousel');
+      let scrollAmount = 0;
+      const scrollStep = 2;
+      const scrollDelay = 30;
+
+      function autoScroll() {
+        if (carousel.scrollWidth - carousel.clientWidth === 0) return;
+        scrollAmount += scrollStep;
+        if (scrollAmount >= carousel.scrollWidth - carousel.clientWidth) {
+          scrollAmount = 0;
+        }
+        carousel.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+      }
+
+      scrollInterval = setInterval(autoScroll, scrollDelay);
+
+      carousel.addEventListener('mouseenter', () => clearInterval(scrollInterval));
+      carousel.addEventListener('mouseleave', () => {
+        scrollInterval = setInterval(autoScroll, scrollDelay);
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.job-block').forEach(block => {
+        observer.observe(block);
+      });
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <h1>加入我们</h1>
+    <p>上海瑞吉机械传动技术有限公司</p>
+    <div class="typewriter">与世界知名工程机械品牌同行 · 成就你的职业梦想</div>
+  </header>
+
+  <nav>
+    <a href="#intro">公司简介</a>
+    <a href="#jobs">招聘岗位</a>
+    <a href="#benefits">职位福利</a>
+    <a href="#contact">联系方式</a>
+  </nav>
+
+  <div class="container">
+    <section id="intro">
+      <h2>公司简介</h2>
+      <p>上海瑞吉机械传动技术有限公司成立于2003年，是连续多年的高新技术企业。公司通过了 ISO9001、ISO14001、ISO45001、IATF16949 等体系认证，产品涵盖机械动力传动组件、液压附件、热交换设备及智能煤矿设备。客户包括三一重工、徐工、柳工、卡特彼勒、沃尔沃、力士乐等知名企业。</p>
+    </section>
+
+    <section id="jobs">
+      <h2>招聘岗位</h2>
+      <div class="job-carousel">
+        <div class="job-block">
+          <h3>海外销售管培生（5名）</h3>
+          <p><strong>任职要求：</strong></p>
+          <ul>
+            <li>🎓 机械或语言类专业应届生，英语流利</li>
+            <li>🌏 有出国参展经验或掌握二外者优先</li>
+            <li>💼 擅长客户开拓、公关谈判</li>
+            <li>🧮 熟悉阿里国际站和数据分析工具</li>
+          </ul>
+          <p><strong>岗位职责：</strong></p>
+          <ul>
+            <li>🌍 开发海外客户并执行市场方案</li>
+            <li>🤝 维护客户关系、收集市场信息</li>
+          </ul>
+        </div>
+
+        <div class="job-block">
+          <h3>IT工程师 / 前端开发方向（2名）</h3>
+          <p><strong>任职要求：</strong></p>
+          <ul>
+            <li>💻 熟悉 Vue / React / Spring Boot</li>
+            <li>🧠 扎实编程基础，善于独立开发</li>
+            <li>🛠 掌握 MySQL / Oracle 数据库</li>
+            <li>🤖 有智能制造经验者优先</li>
+          </ul>
+        </div>
+
+        <div class="job-block">
+          <h3>机械设计工程师（2名）</h3>
+          <p><strong>任职要求：</strong></p>
+          <ul>
+            <li>📐 熟练使用 AutoCAD、SolidWorks</li>
+            <li>🎓 本科及以上学历</li>
+            <li>💪 责任心强，善于沟通</li>
+            <li>⚙️ 有传动设计经验者优先</li>
+          </ul>
+          <p><strong>岗位职责：</strong></p>
+          <ul>
+            <li>📊 产品选型、绘图与工艺对接</li>
+            <li>🗂 加工图归档、支持售后技术问题</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="benefits">
+      <h2>职位福利</h2>
+      <ul>
+        <li>✈️ 出国出差机会</li>
+        <li>🧾 周末双休，五险一金</li>
+        <li>🍱 餐补、交通补贴、节日福利</li>
+        <li>🎉 定期团建，朝九晚六</li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>联系方式</h2>
+      <p>联系人：黄经理<br/>
+        电话：131-6212-5690<br/>
+        公司地址：上海市奉贤区南奉公路4388号瑞吉传动<br/>
+        邮箱：<a href="mailto:hrbp@reijay.com">hrbp@reijay.com</a>
+      </p>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2025 上海瑞吉机械传动技术有限公司 - 招贤纳士
+  </footer>
+</body>
+</html>
