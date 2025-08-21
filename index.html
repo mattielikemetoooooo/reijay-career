@@ -70,6 +70,8 @@
     ul {
       padding-left: 20px;
     }
+
+    /* 岗位轮播（正常浏览样式） */
     .job-carousel {
       overflow-x: auto;
       display: flex;
@@ -96,6 +98,7 @@
     .job-block:hover {
       transform: translateY(-4px);
     }
+
     footer {
       background-color: #002244;
       color: white;
@@ -113,40 +116,25 @@
     }
 
     @media (max-width: 768px) {
-      header {
-        padding: 30px 10px;
-      }
-      .typewriter {
-        font-size: 16px;
-        height: auto;
-      }
-      .container {
-        padding: 0 15px;
-      }
-      .job-carousel {
-        flex-direction: column;
-        overflow-x: visible;
-      }
-      .job-block {
-        flex: 1 1 auto;
-        min-width: auto;
-      }
-      nav {
-        flex-direction: column;
-        gap: 5px;
-      }
+      header { padding: 30px 10px; }
+      .typewriter { font-size: 16px; height: auto; }
+      .container { padding: 0 15px; }
+      .job-carousel { flex-direction: column; overflow-x: visible; }
+      .job-block { flex: 1 1 auto; min-width: auto; }
+      nav { flex-direction: column; gap: 5px; }
     }
 
     @media (max-width: 480px) {
-      nav a {
-        font-size: 14px;
-      }
-      h2 {
-        font-size: 20px;
-      }
+      nav a { font-size: 14px; }
+      h2 { font-size: 20px; }
     }
   </style>
+
+  <!-- html2canvas -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
   <script>
+    /* 页面加载：轮播自动滚动 & 进入视口淡入 */
     let scrollInterval;
     window.addEventListener('DOMContentLoaded', () => {
       const carousel = document.querySelector('.job-carousel');
@@ -155,6 +143,7 @@
       const scrollDelay = 30;
 
       function autoScroll() {
+        if (!carousel) return;
         if (carousel.scrollWidth - carousel.clientWidth === 0) return;
         scrollAmount += scrollStep;
         if (scrollAmount >= carousel.scrollWidth - carousel.clientWidth) {
@@ -162,28 +151,80 @@
         }
         carousel.scrollTo({ left: scrollAmount, behavior: 'smooth' });
       }
-
       scrollInterval = setInterval(autoScroll, scrollDelay);
-
-      carousel.addEventListener('mouseenter', () => clearInterval(scrollInterval));
-      carousel.addEventListener('mouseleave', () => {
-        scrollInterval = setInterval(autoScroll, scrollDelay);
-      });
+      if (carousel) {
+        carousel.addEventListener('mouseenter', () => clearInterval(scrollInterval));
+        carousel.addEventListener('mouseleave', () => { scrollInterval = setInterval(autoScroll, scrollDelay); });
+      }
 
       const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
       }, { threshold: 0.1 });
-
-      document.querySelectorAll('.job-block').forEach(block => {
-        observer.observe(block);
-      });
+      document.querySelectorAll('.job-block').forEach(block => observer.observe(block));
     });
+
+    /* —— 一键导出：把岗位轮播改为打印版纵向堆叠，并在离屏沙箱中截图 —— */
+    function exportPoster() {
+      const srcRoot = document.body;           // 也可以只换成 document.querySelector('#jobs')
+      const sandbox = document.createElement('div');
+      sandbox.className = 'export-sandbox';
+      Object.assign(sandbox.style, {
+        position: 'fixed',
+        left: '-99999px',
+        top: '0',
+        width: '1080px',          // 导出成图目标宽度（可改 750/1242）
+        background: '#f6f9fc',
+        padding: '24px'
+      });
+
+      // 克隆整页到沙箱
+      const clone = srcRoot.cloneNode(true);
+      clone.classList.add('export-mode');
+      sandbox.appendChild(clone);
+      document.body.appendChild(sandbox);
+
+      // 注入“打印版”样式：取消横向滚动，纵向堆叠全部岗位卡
+      const style = document.createElement('style');
+      style.textContent = `
+        .export-mode, .export-mode * { animation: none !important; }
+        .export-mode .job-carousel {
+          overflow: visible !important;
+          display: grid !important;
+          grid-template-columns: 1fr;   /* 两列可改为：1fr 1fr */
+          row-gap: 16px;
+          scroll-snap-type: none !important;
+        }
+        .export-mode .job-block {
+          opacity: 1 !important;
+          transform: none !important;
+          min-width: auto !important;
+          width: 100% !important;
+          flex: 1 1 auto !important;
+        }
+        .export-mode nav { position: static !important; box-shadow: none !important; }
+      `;
+      document.head.appendChild(style);
+
+      // 等一帧让布局生效
+      requestAnimationFrame(async () => {
+        const canvas = await html2canvas(sandbox, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: null
+        });
+        const link = document.createElement('a');
+        link.download = '招聘海报.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // 清理
+        style.remove();
+        sandbox.remove();
+      });
+    }
   </script>
 </head>
+
 <body>
   <header>
     <h1>加入我们</h1>
@@ -203,6 +244,17 @@
       <h2>公司简介</h2>
       <p>上海瑞吉机械传动技术有限公司成立于2003年，是连续多年的高新技术企业。公司通过了 ISO9001、ISO14001、ISO45001、IATF16949 等体系认证，产品涵盖机械动力传动组件、液压附件、热交换产品及智能矿山产品。客户包括三一重工、徐工、柳工、中联重科、卡特彼勒、沃尔沃、力士乐等知名企业。</p>
     </section>
+
+    <button id="downloadPoster" onclick="exportPoster()" style="
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 20px 0;
+    ">导出招聘海报</button>
 
     <section id="jobs">
       <h2>招聘岗位</h2>
